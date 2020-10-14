@@ -1,5 +1,5 @@
 ## Installation
-1. npm install
+1. `npm install`
 
 ## Usage
 * `npm start yourquestion`
