@@ -22,13 +22,14 @@
 
 // Takes in the search term and the results object as arguments
 // Returns link to the closest text match of the results to the search term
+const config = require('./config');
 function findClosestMatch (searchTerm, results) {
 
     
 
     // Least number of words that need to be matching. Adjust if needed
     // Lower == more lenient match; Higher == more specific match
-    const countThreshold = 4;
+    const countThreshold = config.countThreshold;
 
     let lowestDiff = 0;
     let lowestIndex = null;
@@ -91,10 +92,11 @@ function findClosestMatch (searchTerm, results) {
 } 
 
 function sanitizeText (text) {
+
     // Cleans up text by removing any non alphanumeric characters and converting to lowercase
     text = text.toLowerCase();
     // Take out punctuations
-    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"']/g,"")
     text = text.replace(/[^a-z0-9+]+/gi, ' ');
     return text;
 }

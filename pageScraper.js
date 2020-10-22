@@ -6,6 +6,7 @@
 
 const { findClosestMatch, sanitizeText } = require('./textFunctions');
 const tf = require('./textFunctions');
+const config = require('./config');
 
 const scraperObject = {
     url: 'https://www.google.com/',
@@ -18,9 +19,9 @@ const scraperObject = {
             await page.goto(this.url);
     
             // Find google's search form selector
-            await page.type('input.gsfi', `site:quizlet.com ${searchTerm}`);
+            await page.type('input.gsfi', `site:quizlet.com "${searchTerm}"`);
             await page.keyboard.press('Enter');
-            console.log('\x1b[33m%s\x1b[0m',`Searching for => ${searchTerm}`);
+            console.log('\x1b[33m%s\x1b[0m',`Searching for => "${searchTerm}"`);
     
             // Going to results page
             await page.waitForNavigation();
@@ -31,9 +32,15 @@ const scraperObject = {
             let desc = [];
             links = await page.$$eval('div.g > div.rc > div:first-child > a', el => el.map(el => el.href));
             desc = await page.$$eval('div.g > div.rc > div.IsZvec > div > span', el => el.map(el => el.textContent));
-    
+            
             // Amount of links we want to look at
-            const resultAmt = 4;
+            let resultAmt = config.resultAmt;
+            
+            // Check if there are less links than the amount we set
+            if (links.length < resultAmt) {
+                resultAmt = links.length;
+            }
+
     
             let results = [];
     
