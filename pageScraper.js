@@ -16,7 +16,8 @@ const scraperObject = {
 
             console.log(`Navigating to ${this.url}...`);
             // Goto google
-            await page.goto(this.url);
+            // Always just load the domcontent instead of waiting for stylesheets, images, and subframes to finish loading.
+            await page.goto(this.url, {waitUntil: 'domcontentloaded'});
     
             // Find google's search form selector
             await page.type('input.gsfi', `site:quizlet.com "${searchTerm}"`);
@@ -58,7 +59,7 @@ const scraperObject = {
             let chosenResult = findClosestMatch(searchTerm, results);
 
             //Go to chosen result link
-            await page.goto(chosenResult);
+            await page.goto(chosenResult, {waitUntil: 'domcontentloaded'});
             console.log(`Navigating to ${chosenResult}...`);
 
             
@@ -76,6 +77,9 @@ const scraperObject = {
 
             // console.log(searchTerm);
 
+            // TODO!!! make this into seperate function in text functions to find a "close enough" match
+            // matches don't have to be word for word to be correct
+
             let matchIndex = 0;
             let match = false;
             let wordTextMatch = false;
@@ -89,6 +93,7 @@ const scraperObject = {
                 wordTextMatch = true;
                 // console.log(wt.match(r));
                 matchIndex = i;
+                break;
                }
                 
             }
@@ -103,6 +108,7 @@ const scraperObject = {
                 match = true;
                 // console.log(dt.match(r));
                 matchIndex = i;
+                break;
                 }
                 
                 }
